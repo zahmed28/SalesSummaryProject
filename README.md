@@ -12,14 +12,19 @@ This document outlines the interaction between a front-end application and a set
 
 ## Components
 ### Front-end Application:
-A user interface that display list of sales data. It communicates with the backend services through the API Gateway.
+A web interface built using ASP.NET Core Web MVC.
+Responsible for displaying the list of sales.
+Communicates with backend services through the API Gateway.
 
 ### API Gateway :
-Acts as the entry point for the front-end application to interact with the backend microservices. It routes requests to the appropriate services and aggregates results.
+Serves as the entry point for the front end.
+Routes requests to the appropriate microservices.
+Handles aggregation of results.
 
 ### Microservices:
 ### SalesSummaryInternalService:
- This service read data from CSV files.
+Reads and processes sales data from the CSV file.
+Applies logic to summarize the data for front-end consumption.
 
  ## Technology Stack
 ●	Core Technology: C# .NET 8
@@ -33,6 +38,7 @@ Acts as the entry point for the front-end application to interact with the backe
 ●	Documentation: Swagger
 
 ## Development Considerations
+
 ●	Coding Best Practices: Following SOLID principles, clean code practices.
 
 ●	Documentation: Comprehensive documentation of code, architecture, and design decisions.
@@ -41,9 +47,15 @@ Acts as the entry point for the front-end application to interact with the backe
 
 
 # Architectural Patterns:
-●	Implementing CQRS (Command Query Responsibility Segregation) 
 
-●	Domain-driven design, Gateway pattern.
+This project should incorporate the following software architecture patterns:
+
+● CQRS (Command Query Responsibility Segregation): For clear separation of read/write responsibilities.
+
+● Domain-Driven Design (DDD): To encapsulate domain logic effectively.
+
+● Gateway Pattern: For structured access to internal services via the API Gateway.
+
 
 ## High Level Architecture:
 ![image](https://github.com/user-attachments/assets/5ad85ecc-aacb-4853-80f3-002af73c554d)
