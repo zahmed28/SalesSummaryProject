@@ -1,0 +1,86 @@
+﻿@model SalesSummaryResponse;
+
+@{
+    ViewData["Title"] = "Sales Summary";
+    string sortBy = Context.Request.Query["sortBy"];
+    string sortOrder = Context.Request.Query["sortOrder"];
+    string GetSortOrder(string column) => (sortBy == column && sortOrder != "desc") ? "desc" : "asc";
+
+    int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
+    int currentPage = Model.Page;
+}
+
+
+<h2 class="mt-4 mb-3">Sales Summary</h2>
+
+<form asp-action="Index" method="get" class="row mb-3">
+    <div class="col-md-3">
+        <input type="text" name="country" value="@ViewBag.Country" class="form-control" placeholder="Filter by Country" />
+    </div>   
+    <div class="col-md-3 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Search</button>
+    </div>
+</form>
+
+@if (!string.IsNullOrEmpty(Model?.ErrorMessage))
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+else if (Model?.SaleRecordList != null && Model.SaleRecordList.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th><a asp-action="Index" asp-route-sortBy="Segment" asp-route-sortOrder="@GetSortOrder("Segment")">Segment</a></th>
+                    <th><a asp-action="Index" asp-route-sortBy="Country" asp-route-sortOrder="@GetSortOrder("Country")">Country</a></th>
+                    <th><a asp-action="Index" asp-route-sortBy="Product" asp-route-sortOrder="@GetSortOrder("Product")">Product</a></th>
+                    <th><a asp-action="Index" asp-route-sortBy="DiscountBand" asp-route-sortOrder="@GetSortOrder("DiscountBand")">Discount Band</a></th>
+                    <th><a asp-action="Index" asp-route-sortBy="UnitsSold" asp-route-sortOrder="@GetSortOrder("UnitsSold")">Units Sold</a></th>
+                    <th><a asp-action="Index" asp-route-sortBy="ManufacturingPrice" asp-route-sortOrder="@GetSortOrder("ManufacturingPrice")">Manufacturing Price</a></th>
+                    <th><a asp-action="Index" asp-route-sortBy="SalePrice" asp-route-sortOrder="@GetSortOrder("SalePrice")">Sale Price</a></th>
+                    <th><a asp-action="Index" asp-route-sortBy="Date" asp-route-sortOrder="@GetSortOrder("Date")">Date</a></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var record in Model.SaleRecordList)
+                {
+                    <tr>
+                        <td>@record.Segment</td>
+                        <td>@record.Country</td>
+                        <td>@record.Product</td>
+                        <td>@record.DiscountBand</td>
+                        <td class="text-end">@record.UnitsSold</td>
+                        <td class="text-end">£@record.ManufacturingPrice.ToString("N2")</td>
+                        <td class="text-end">@record.SalePrice</td>
+                        <td>@record.Date.ToString("dd MMM yyyy")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center">
+        <p class="mb-0">Showing page @Model.Page of @totalPages (Total: @Model.TotalRecords records)</p>
+
+        <nav>
+            <ul class="pagination mb-0">
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link"
+                           asp-route-page="@i"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-sortBy="@ViewBag.SortBy"
+                           asp-route-sortOrder="@ViewBag.SortOrder"
+                           asp-route-country="@ViewBag.Country">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">No sales records found.</div>
+}
